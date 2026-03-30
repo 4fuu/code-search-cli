@@ -3,6 +3,8 @@ use crate::core::symbol::SymbolKind;
 use clap::{Parser, Subcommand, ValueEnum};
 use std::path::PathBuf;
 
+pub const DEFAULT_LIMIT: usize = 100;
+
 #[derive(Parser)]
 #[command(name = "codes", about = "Tree-sitter based code search CLI")]
 pub struct Cli {
@@ -54,8 +56,10 @@ pub struct SymbolsArgs {
     pub lang: Option<Language>,
     #[arg(long, help = "Filter by file path (substring or glob with *)")]
     pub path: Option<String>,
-    #[arg(long, help = "Limit the number of results")]
-    pub limit: Option<usize>,
+    #[arg(long, default_value_t = DEFAULT_LIMIT, help = "Limit the number of results")]
+    pub limit: usize,
+    #[arg(long, default_value_t = 0, help = "Skip the first N results")]
+    pub offset: usize,
     #[arg(long, default_value = "text", help = "Output format")]
     pub format: OutputFormat,
 }
@@ -70,6 +74,10 @@ pub struct DefinitionArgs {
     pub lang: Option<Language>,
     #[arg(long, help = "Filter by file path (substring or glob with *)")]
     pub path: Option<String>,
+    #[arg(long, default_value_t = DEFAULT_LIMIT, help = "Limit the number of results")]
+    pub limit: usize,
+    #[arg(long, default_value_t = 0, help = "Skip the first N results")]
+    pub offset: usize,
     #[arg(long, default_value = "text", help = "Output format")]
     pub format: OutputFormat,
 }
@@ -92,6 +100,10 @@ pub struct ReferencesArgs {
     pub path: Option<String>,
     #[arg(long, help = "Include the definition site in results")]
     pub include_def: bool,
+    #[arg(long, default_value_t = DEFAULT_LIMIT, help = "Limit the number of results")]
+    pub limit: usize,
+    #[arg(long, default_value_t = 0, help = "Skip the first N results")]
+    pub offset: usize,
     #[arg(long, default_value = "text", help = "Output format")]
     pub format: OutputFormat,
 }

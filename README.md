@@ -93,9 +93,9 @@ codes skill install --target codex
 codes [-j <n>] <subcommand>
 
 codes overview <file> [--format text|json]
-codes symbols [--name <substr>] [--kind <kind>] [--lang <lang>] [--path <glob>] [--limit <n>] [--format text|json]
-codes definition --name <name> [--kind <kind>] [--lang <lang>] [--path <glob>] [--format text|json]
-codes references --name <name> [--kind <kind>] [--lang <lang>] [--path <glob>] [--include-def] [--format text|json]
+codes symbols [--name <substr>] [--kind <kind>] [--lang <lang>] [--path <glob>] [--limit <n>] [--offset <n>] [--format text|json]
+codes definition --name <name> [--kind <kind>] [--lang <lang>] [--path <glob>] [--limit <n>] [--offset <n>] [--format text|json]
+codes references --name <name> [--kind <kind>] [--lang <lang>] [--path <glob>] [--include-def] [--limit <n>] [--offset <n>] [--format text|json]
 codes index
 codes clear-cache
 codes skill print

@@ -90,11 +90,26 @@ pub fn run(args: SymbolsArgs) -> Result<()> {
         }
     }
 
-    if let Some(limit) = args.limit {
-        symbols.truncate(limit);
-    }
+    let total = symbols.len();
+    let end = args.offset.saturating_add(args.limit).min(total);
+    let symbols = if args.offset >= total {
+        Vec::new()
+    } else {
+        symbols
+            .into_iter()
+            .skip(args.offset)
+            .take(end - args.offset)
+            .collect()
+    };
 
-    print_symbols(&symbols, "symbols", &args.format)
+    print_symbols(
+        &symbols,
+        "symbols",
+        &args.format,
+        Some(total),
+        args.offset,
+        args.limit,
+    )
 }
 
 fn kind_priority(kind: &SymbolKind) -> u8 {

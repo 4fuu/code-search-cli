@@ -3,6 +3,7 @@ use crate::core::cache::{refresh_cache, SymbolLoad};
 use crate::core::discover::has_ignored_path_match;
 use crate::core::output::print_symbols;
 use crate::core::repo::find_repo_root;
+use crate::core::symbol::SymbolKind;
 use crate::lang::language_supports_kind;
 use anyhow::{Context, Result};
 
@@ -44,5 +45,44 @@ pub fn run(args: DefinitionArgs) -> Result<()> {
         }
     }
 
-    print_symbols(&results, "definition", &args.format)
+    results.sort_by(|a, b| {
+        a.path
+            .cmp(&b.path)
+            .then(a.selection_range.line.cmp(&b.selection_range.line))
+            .then(a.selection_range.column.cmp(&b.selection_range.column))
+            .then(kind_priority(a.kind).cmp(&kind_priority(b.kind)))
+    });
+
+    let total = results.len();
+    let end = args.offset.saturating_add(args.limit).min(total);
+    let results = if args.offset >= total {
+        Vec::new()
+    } else {
+        results
+            .into_iter()
+            .skip(args.offset)
+            .take(end - args.offset)
+            .collect()
+    };
+
+    print_symbols(
+        &results,
+        "definition",
+        &args.format,
+        Some(total),
+        args.offset,
+        args.limit,
+    )
+}
+
+fn kind_priority(kind: SymbolKind) -> u8 {
+    match kind {
+        SymbolKind::Class | SymbolKind::Struct | SymbolKind::Interface | SymbolKind::Trait => 0,
+        SymbolKind::Enum => 1,
+        SymbolKind::Function | SymbolKind::Method => 2,
+        SymbolKind::TypeAlias => 3,
+        SymbolKind::Const | SymbolKind::Static | SymbolKind::Variable => 4,
+        SymbolKind::Impl => 5,
+        SymbolKind::Module => 6,
+    }
 }

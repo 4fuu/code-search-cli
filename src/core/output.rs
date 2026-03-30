@@ -33,6 +33,9 @@ pub fn print_overview(symbols: &[Symbol], file_label: &str, format: &OutputForma
                 command: "overview",
                 repo_root: None,
                 matches: symbols.iter().map(SymbolMatch::from).collect(),
+                total: None,
+                offset: 0,
+                limit: crate::cli::DEFAULT_LIMIT,
                 error: None,
             };
             println!("{}", serde_json::to_string_pretty(&output)?);
@@ -42,18 +45,17 @@ pub fn print_overview(symbols: &[Symbol], file_label: &str, format: &OutputForma
 }
 
 /// Print symbols for `symbols` / `definition` commands.
-pub fn print_symbols(symbols: &[Symbol], command: &str, format: &OutputFormat) -> Result<()> {
+pub fn print_symbols(
+    symbols: &[Symbol],
+    command: &str,
+    format: &OutputFormat,
+    total: Option<usize>,
+    offset: usize,
+    limit: usize,
+) -> Result<()> {
     match format {
         OutputFormat::Text => {
-            println!(
-                "{} {}",
-                symbols.len(),
-                if symbols.len() == 1 {
-                    "match"
-                } else {
-                    "matches"
-                }
-            );
+            print_count_line(symbols.len(), total, offset, limit, "match", "matches");
             for sym in symbols {
                 let sig = sym.signature.as_deref().unwrap_or("");
                 println!(
@@ -67,6 +69,9 @@ pub fn print_symbols(symbols: &[Symbol], command: &str, format: &OutputFormat) -
                 command,
                 repo_root: None,
                 matches: symbols.iter().map(SymbolMatch::from).collect(),
+                total,
+                offset,
+                limit,
                 error: None,
             };
             println!("{}", serde_json::to_string_pretty(&output)?);
@@ -80,21 +85,16 @@ pub fn print_references(
     refs: &[Reference],
     format: &OutputFormat,
     warning: Option<&str>,
+    total: Option<usize>,
+    offset: usize,
+    limit: usize,
 ) -> Result<()> {
     match format {
         OutputFormat::Text => {
             if let Some(msg) = warning {
                 eprintln!("warning: {}", msg);
             }
-            println!(
-                "{} {}",
-                refs.len(),
-                if refs.len() == 1 {
-                    "reference"
-                } else {
-                    "references"
-                }
-            );
+            print_count_line(refs.len(), total, offset, limit, "reference", "references");
             for r in refs {
                 println!("{}:{}    {}", r.path, r.line, r.context);
             }
@@ -111,6 +111,9 @@ pub fn print_references(
                         context: r.context.clone(),
                     })
                     .collect(),
+                total,
+                offset,
+                limit,
                 warning: warning.map(|s| s.to_string()),
                 error: None,
             };
@@ -138,12 +141,46 @@ pub fn print_error(err: &crate::core::error::AppError, format: &OutputFormat) {
     }
 }
 
+fn print_count_line(
+    count: usize,
+    total: Option<usize>,
+    offset: usize,
+    limit: usize,
+    singular: &str,
+    plural: &str,
+) {
+    let noun = if count == 1 { singular } else { plural };
+    if let Some(total) = total {
+        let paginated = offset > 0 || total > limit;
+        if paginated {
+            let start = if count == 0 { 0 } else { offset + 1 };
+            let end = offset + count;
+            println!(
+                "{} {} (showing {}-{} of {})",
+                count, noun, start, end, total
+            );
+        } else if total != count {
+            println!("{} {} ({} total)", count, noun, total);
+        } else {
+            println!("{} {}", count, noun);
+        }
+    } else {
+        println!("{} {}", count, noun);
+    }
+}
+
 #[derive(Serialize)]
 struct JsonOutput<'a> {
     command: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     repo_root: Option<String>,
     matches: Vec<SymbolMatch>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    total: Option<usize>,
+    #[serde(skip_serializing_if = "is_zero")]
+    offset: usize,
+    #[serde(skip_serializing_if = "is_default_limit")]
+    limit: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
     error: Option<serde_json::Value>,
 }
@@ -184,6 +221,12 @@ struct JsonRefOutput<'a> {
     command: &'a str,
     references: Vec<RefMatch>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    total: Option<usize>,
+    #[serde(skip_serializing_if = "is_zero")]
+    offset: usize,
+    #[serde(skip_serializing_if = "is_default_limit")]
+    limit: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
     warning: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     error: Option<serde_json::Value>,
@@ -195,4 +238,12 @@ struct RefMatch {
     line: usize,
     column: usize,
     context: String,
+}
+
+fn is_zero(value: &usize) -> bool {
+    *value == 0
+}
+
+fn is_default_limit(value: &usize) -> bool {
+    *value == crate::cli::DEFAULT_LIMIT
 }

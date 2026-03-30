@@ -84,9 +84,9 @@ Typical workflow:
 
 ```
 codes overview <file> [--format text|json]
-codes symbols [--name <substr>] [--kind <kind>] [--lang <lang>] [--path <glob>] [--limit <n>] [--format text|json]
-codes definition --name <name> [--kind <kind>] [--lang <lang>] [--path <glob>] [--format text|json]
-codes references --name <name> [--kind <kind>] [--lang <lang>] [--path <glob>] [--include-def] [--format text|json]
+codes symbols [--name <substr>] [--kind <kind>] [--lang <lang>] [--path <glob>] [--limit <n>] [--offset <n>] [--format text|json]
+codes definition --name <name> [--kind <kind>] [--lang <lang>] [--path <glob>] [--limit <n>] [--offset <n>] [--format text|json]
+codes references --name <name> [--kind <kind>] [--lang <lang>] [--path <glob>] [--include-def] [--limit <n>] [--offset <n>] [--format text|json]
 codes index
 codes clear-cache
 codes skill print
@@ -100,7 +100,8 @@ codes skill print
 | `--kind` | all search | Filter by symbol kind (tab-completable) |
 | `--lang` | all search | Filter by language (tab-completable, aliases: rs/ts/py) |
 | `--path` | all search | Filter by file path — substring or glob with `*` |
-| `--limit` | symbols | Cap number of results |
+| `--limit` | symbols, definition, references | Cap number of results (default: 100) |
+| `--offset` | symbols, definition, references | Skip the first N results |
 | `--include-def` | references | Include the definition site in results |
 | `--format` | all | `text` (default, compact) or `json` |
 

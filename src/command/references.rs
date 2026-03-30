@@ -119,5 +119,24 @@ pub fn run(args: ReferencesArgs) -> Result<()> {
     // Deduplicate
     all_refs.dedup_by(|a, b| a.path == b.path && a.line == b.line && a.column == b.column);
 
-    print_references(&all_refs, &args.format, warning.as_deref())
+    let total = all_refs.len();
+    let end = args.offset.saturating_add(args.limit).min(total);
+    let all_refs = if args.offset >= total {
+        Vec::new()
+    } else {
+        all_refs
+            .into_iter()
+            .skip(args.offset)
+            .take(end - args.offset)
+            .collect()
+    };
+
+    print_references(
+        &all_refs,
+        &args.format,
+        warning.as_deref(),
+        Some(total),
+        args.offset,
+        args.limit,
+    )
 }
