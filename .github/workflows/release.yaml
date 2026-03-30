@@ -7,9 +7,9 @@ on:
         description: "Version to release, for example 0.1.0 or v0.1.0"
         required: true
         type: string
-      release_notes:
-        description: "Release description shown on GitHub"
-        required: true
+      previous_version:
+        description: "Optional previous version for Full Changelog, for example 0.0.9 or v0.0.9"
+        required: false
         type: string
 
 permissions:
@@ -118,7 +118,6 @@ jobs:
       VERSION: ${{ needs.prepare.outputs.version }}
       TAG: ${{ needs.prepare.outputs.tag }}
       TITLE: ${{ needs.prepare.outputs.title }}
-      RELEASE_NOTES: ${{ inputs.release_notes }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/download-artifact@v8
@@ -137,6 +136,17 @@ jobs:
           set -euo pipefail
           cd release
           sha256sum * > SHA256SUMS.txt
+      - name: Generate placeholder release notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          prev="${{ inputs.previous_version }}"
+          if [[ -n "$prev" ]]; then
+            prev="${prev#v}"
+            printf 'Full Changelog: %s...%s\n' "$prev" "$VERSION" > release/RELEASE_NOTES.md
+          else
+            : > release/RELEASE_NOTES.md
+          fi
       - name: Render Homebrew formula
         shell: bash
         run: |
@@ -182,6 +192,6 @@ jobs:
           gh release create "$TAG" \
             --repo "$REPO_SLUG" \
             --title "$TITLE" \
-            --notes "$RELEASE_NOTES" \
+            --notes-file release/RELEASE_NOTES.md \
             --target "$GITHUB_SHA" \
             release/*
