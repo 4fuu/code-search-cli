@@ -2,21 +2,21 @@ class Codes < Formula
   desc "Tree-sitter based local code search CLI"
   homepage "https://github.com/4fuu/code-search-cli"
   license "MIT"
-  version "0.1.0"
+  version "0.1.1"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/4fuu/code-search-cli/releases/download/v0.1.0/codes-v0.0.0-aarch64-apple-darwin.tar.gz"
-      sha256 "11c616a17aa5f1f0da394d8f0c0efeac8af54c4642d3e7c842acce1e558bacc5" # macos_arm64
+      url "https://github.com/4fuu/code-search-cli/releases/download/v0.1.1/codes-v0.0.0-aarch64-apple-darwin.tar.gz"
+      sha256 "737b89c94482d8dc8aa1b3c019b0b8eaa0a2d77658063c34a8c1da2de1823dde" # macos_arm64
     else
-      url "https://github.com/4fuu/code-search-cli/releases/download/v0.1.0/codes-v0.0.0-x86_64-apple-darwin.tar.gz"
-      sha256 "43f87f1258e415a301cb8b27a0be36c50ae4c3e9e7652563caf54f002d175d2e" # macos_x86
+      url "https://github.com/4fuu/code-search-cli/releases/download/v0.1.1/codes-v0.0.0-x86_64-apple-darwin.tar.gz"
+      sha256 "cac697ede09f490c080e80f114b24aa8175d9576770f5deebb2b656fa7969425" # macos_x86
     end
   end
 
   on_linux do
-    url "https://github.com/4fuu/code-search-cli/releases/download/v0.1.0/codes-v0.0.0-x86_64-unknown-linux-gnu.tar.gz"
-    sha256 "cf36e25023a9bf96863815c6bbbe9341edcc3247ec00987b9a548d26215a4c51" # linux_x86
+    url "https://github.com/4fuu/code-search-cli/releases/download/v0.1.1/codes-v0.0.0-x86_64-unknown-linux-gnu.tar.gz"
+    sha256 "796aac5e1af56602f42a3468034c7c5d0c6f22db9674979d52e1dde2bb8cbe26" # linux_x86
   end
 
   def install
