@@ -71,6 +71,8 @@ jobs:
           targets: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@v2
       - name: Build
+        env:
+          CODES_VERSION: ${{ needs.prepare.outputs.version }}
         run: cargo build --release --target ${{ matrix.target }}
       - name: Package Unix archive
         if: runner.os != 'Windows'

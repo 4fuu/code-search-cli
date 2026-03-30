@@ -6,7 +6,7 @@ use std::path::PathBuf;
 pub const DEFAULT_LIMIT: usize = 100;
 
 #[derive(Parser)]
-#[command(name = "codes", about = "Tree-sitter based code search CLI")]
+#[command(name = "codes", about = "Tree-sitter based code search CLI", version = option_env!("CODES_VERSION").unwrap_or(env!("CARGO_PKG_VERSION")))]
 pub struct Cli {
     #[arg(
         short = 'j',
