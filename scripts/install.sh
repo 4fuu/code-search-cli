@@ -71,12 +71,14 @@ verify_checksum() {
   fi
 }
 
+tmpdir=""
+
 main() {
   require_cmd curl
   require_cmd tar
   require_cmd install
 
-  local target tag archive_name tmpdir archive_path sums_path
+  local target tag archive_name archive_path sums_path
   target="$(detect_target)"
   tag="$(resolve_tag)"
   if [[ -z "$tag" ]]; then
