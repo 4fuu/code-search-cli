@@ -35,7 +35,7 @@ pub fn discover_files(repo_root: &Path) -> Result<Vec<SourceFile>> {
 
     for entry in builder.build() {
         let entry = entry?;
-        if !entry.file_type().map_or(false, |ft| ft.is_file()) {
+        if !entry.file_type().is_some_and(|ft| ft.is_file()) {
             continue;
         }
         let path = entry.path();
@@ -89,7 +89,7 @@ pub fn has_ignored_path_match(repo_root: &Path, pattern: &str) -> bool {
         .git_exclude(false);
 
     for entry in builder.build().flatten() {
-        if !entry.file_type().map_or(false, |ft| ft.is_file()) {
+        if !entry.file_type().is_some_and(|ft| ft.is_file()) {
             continue;
         }
         let path = entry.path();

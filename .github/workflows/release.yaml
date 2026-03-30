@@ -65,7 +65,7 @@ jobs:
             target: x86_64-pc-windows-msvc
             archive_ext: zip
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
@@ -103,7 +103,7 @@ jobs:
           $archive = "$env:BIN_NAME-$env:TAG-$env:TARGET.$env:EXT"
           Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $archive -Force
           "ARCHIVE_NAME=$archive" | Out-File -FilePath $env:GITHUB_ENV -Append
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.target }}
           path: ${{ env.ARCHIVE_NAME }}
@@ -120,8 +120,8 @@ jobs:
       TITLE: ${{ needs.prepare.outputs.title }}
       RELEASE_NOTES: ${{ inputs.release_notes }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v8
         with:
           path: dist
       - name: Flatten artifacts

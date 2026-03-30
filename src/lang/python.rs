@@ -28,7 +28,7 @@ impl LanguageSupport for PythonSupport {
     fn symbol_kind_from_pattern(
         &self,
         pattern_index: usize,
-        def_node: &Node,
+        _def_node: &Node,
     ) -> Option<SymbolKind> {
         // Pattern order from queries/python/symbols.scm:
         // 0: function_definition (top-level)
@@ -36,14 +36,7 @@ impl LanguageSupport for PythonSupport {
         // 2: function_definition inside class (method)
         // 3: module-level assignment
         match pattern_index {
-            0 => {
-                // Check if it's async
-                if def_node.kind() == "function_definition" {
-                    Some(SymbolKind::Function)
-                } else {
-                    Some(SymbolKind::Function)
-                }
-            }
+            0 => Some(SymbolKind::Function),
             1 => Some(SymbolKind::Class),
             2 => Some(SymbolKind::Method),
             3 => Some(SymbolKind::Variable),

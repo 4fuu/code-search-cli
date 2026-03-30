@@ -614,7 +614,8 @@ mod tests {
         let repo = Path::new("/repo");
         let key = "abcdef0123456789";
         let path = cache_file_path(repo, key);
-        assert!(path.to_string_lossy().contains(".code-search/files/ab/"));
+        let normalized = path.to_string_lossy().replace('\\', "/");
+        assert!(normalized.contains(".code-search/files/ab/"));
         assert!(path.to_string_lossy().ends_with(".bin"));
     }
 
