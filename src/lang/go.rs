@@ -12,10 +12,11 @@ const TYPE_REFS: &str = r#"
 (type_identifier) @reference
 "#;
 
-/// Call expressions plus identifier for function-as-value.
+/// Call expressions, identifier for function-as-value, and method declarations.
 const CALLABLE_REFS: &str = r#"
 (call_expression function: (identifier) @reference)
 (call_expression function: (selector_expression field: (field_identifier) @reference))
+(method_declaration name: (field_identifier) @reference)
 (identifier) @reference
 "#;
 
