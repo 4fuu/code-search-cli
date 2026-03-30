@@ -4,7 +4,7 @@
 
 `codes` is a Tree-sitter based code navigation CLI built for AI agents. Instead of reading entire files with `grep` or `Read`, agents can query symbols directly — getting precise, low-token answers about definitions, references, and file structure.
 
-Indexed rust-lang/rust (35k files, 305k symbols) in **9.5 seconds** on a cold cache.
+Indexed rust-lang/rust (35k files, 305k symbols) in **9.5 seconds** on a cold cache (AMD Ryzen 5 7500F, 2 threads).
 
 ## Why codes
 

@@ -60,12 +60,12 @@ verify_checksum() {
     exit 1
   fi
 
-  if command -v sha256sum >/dev/null 2>&1; then
-    echo "$expected  $file" | sha256sum --check --status
-  elif command -v shasum >/dev/null 2>&1; then
+  if command -v shasum >/dev/null 2>&1; then
     local actual
     actual="$(shasum -a 256 "$file" | awk '{print $1}')"
     [[ "$actual" == "$expected" ]]
+  elif command -v sha256sum >/dev/null 2>&1; then
+    echo "$expected  $file" | sha256sum --check --status
   else
     echo "warning: no sha256 tool found, skipping checksum verification" >&2
   fi

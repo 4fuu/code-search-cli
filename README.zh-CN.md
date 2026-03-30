@@ -4,7 +4,7 @@
 
 `codes` 是一个基于 Tree-sitter 的代码导航 CLI，专为 AI Agent 设计。Agent 不再需要用 `grep` 或逐行读取文件来定位代码——直接查询符号，获得精准、低 token 消耗的结果。
 
-冷缓存下索引 rust-lang/rust（35k 文件、305k 符号）仅需 **9.5 秒**。
+冷缓存下索引 rust-lang/rust（35k 文件、305k 符号）仅需 **9.5 秒**（AMD Ryzen 5 7500F，双线程）。
 
 ## 为什么用 codes
 
