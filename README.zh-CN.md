@@ -84,6 +84,7 @@ codes definition --name Parser
 codes references --name Parser
 codes index
 codes clear-cache
+codes skill install --target codex
 ```
 
 ## 命令一览
@@ -98,6 +99,7 @@ codes references --name <name> [--kind <kind>] [--lang <lang>] [--path <glob>] [
 codes index
 codes clear-cache
 codes skill print
+codes skill install --target <codex|claude-code> [--force]
 ```
 
 ## 输出示例

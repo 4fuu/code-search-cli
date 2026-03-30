@@ -100,6 +100,23 @@ pub struct ReferencesArgs {
 pub enum SkillCommand {
     /// Print the SKILL.md content to stdout
     Print,
+    /// Install the bundled SKILL.md into Codex or Claude Code
+    Install(SkillInstallArgs),
+}
+
+#[derive(clap::Args)]
+pub struct SkillInstallArgs {
+    #[arg(long, value_enum, help = "Install target")]
+    pub target: SkillTarget,
+    #[arg(long, help = "Overwrite an existing SKILL.md")]
+    pub force: bool,
+}
+
+#[derive(Clone, ValueEnum)]
+pub enum SkillTarget {
+    Codex,
+    #[value(alias = "claude")]
+    ClaudeCode,
 }
 
 #[derive(Clone, ValueEnum)]
