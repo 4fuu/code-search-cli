@@ -59,26 +59,43 @@ fn write_skill_file(path: &Path) -> Result<()> {
 
 const SKILL_MD: &str = r#"---
 name: code-search-cli
-description: Fast Tree-sitter symbol search for Rust/TypeScript/Python/Go. Indexes all 305k symbols across 35k files in rust-lang/rust in ~10s. Use before rg/grep to locate symbols cheaply; fall back to rg/grep only for raw text.
+description: Lightning-fast Tree-sitter symbol search for Rust/TypeScript/Python/Go. Use to find definitions, track usages, or explore code structure.
 ---
 
 # code-search-cli
 
 Binary: `codes`
 
+## Speed
+
+- Indexes 305k symbols across 35k files in ~10s (rust-lang/rust)
+- Queries return in milliseconds using pre-built cache
+- Incremental refresh: only re-parses changed files
+
 ## When to use codes vs rg/grep
 
-**Rule**: thinking about a *symbol name* → `codes`; thinking about *raw text* → `rg`/`grep`.
+**Quick Rule**:
+- Looking for *code structures* (functions, classes, variables, etc.) → `codes`
+- Looking for *text patterns* (log messages, comments, config values, etc.) → `rg`/`grep`
 
-Use `codes` first to locate symbols with minimal token cost. Only open files with `rg`/`grep`/Read
-after you know exactly where to look.
+### Use `codes` when:
+- You want to find **where a symbol is defined** → `codes definition --name <name>`
+- You want to find **where a symbol is used/called** → `codes references --name <name>` (AST-aware, fewer false positives)
+- You want to **browse all symbols** in a file → `codes overview <file>`
+- You want to **search symbols by name** across the codebase → `codes symbols --name <substr>` (case-insensitive substring)
 
-Typical workflow:
-1. `codes symbols --name <substr>` — locate candidates across the whole repo instantly
-2. `codes definition --name <name>` — jump straight to the definition
-3. `codes references --name <name>` — AST-aware call-site search, fewer false positives than rg/grep
-4. `codes overview <file>` — get the symbol skeleton before reading a file in full
-5. Once narrowed to 1–3 files, switch to `rg`/`grep` or Read for literals, log strings, SQL, env vars, routes
+### Use `rg`/`grep` when:
+- You're searching for **string literals**, log messages, or comments
+- You need to search **configuration files**, SQL, or other non-code text
+- You want **regex patterns** that span multiple symbols
+- You need to search **outside indexed languages** (shell scripts, YAML, etc.)
+
+### Typical workflow:
+1. `codes symbols --name <substr>` — quickly find candidate symbols
+2. `codes definition --name <name>` — jump to the definition
+3. `codes references --name <name>` — find all usages (AST-aware)
+4. `codes overview <file>` — get a file's symbol structure
+5. If not found, fall back to `rg`/`grep` for literal text search
 
 ## Commands
 
