@@ -2,7 +2,7 @@
 
 [中文说明](./README.zh-CN.md)
 
-`codes` is a Tree-sitter based code navigation CLI built for AI agents. Instead of reading entire files with `grep` or `Read`, agents can query symbols directly — getting precise, low-token answers about definitions, references, and file structure.
+`codes` is a Tree-sitter based code navigation tool for AI agents. You can use it as the `codes` CLI or as the `code_search_cli` Rust library. Instead of reading entire files with `grep` or `Read`, agents can query symbols directly — getting precise, low-token answers about definitions, references, and file structure.
 
 Indexed rust-lang/rust (35k files, 305k symbols) in **9.5 seconds** on a cold cache (AMD Ryzen 5 7500F, 2 threads).
 
@@ -42,6 +42,31 @@ AI agents exploring a codebase waste tokens on broad grep scans and full file re
 - PHP
 
 ## Installation
+
+### Rust library
+
+```toml
+[dependencies]
+code-search-cli = "0.1"
+```
+
+```rust
+use code_search_cli::{search_symbols, SymbolSearchRequest};
+
+let result = search_symbols(SymbolSearchRequest {
+    repo_path: ".".into(),
+    name: Some("Parser".into()),
+    kind: None,
+    language: None,
+    path_pattern: None,
+    limit: 20,
+    offset: 0,
+})?;
+
+for symbol in result.items {
+    println!("{} {} {}", symbol.kind, symbol.name, symbol.path);
+}
+```
 
 ### Homebrew
 

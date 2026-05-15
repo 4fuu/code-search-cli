@@ -2,7 +2,7 @@
 
 [English README](./README.md)
 
-`codes` 是一个基于 Tree-sitter 的代码导航 CLI，专为 AI Agent 设计。Agent 不再需要用 `grep` 或逐行读取文件来定位代码——直接查询符号，获得精准、低 token 消耗的结果。
+`codes` 是一个基于 Tree-sitter 的代码导航工具，专为 AI Agent 设计。你既可以把它当作 `codes` CLI 使用，也可以把它当作 `code_search_cli` Rust 库接入。Agent 不再需要用 `grep` 或逐行读取文件来定位代码——直接查询符号，获得精准、低 token 消耗的结果。
 
 冷缓存下索引 rust-lang/rust（35k 文件、305k 符号）仅需 **9.5 秒**（AMD Ryzen 5 7500F，双线程）。
 
@@ -42,6 +42,31 @@ AI Agent 探索代码库时，大量 token 浪费在宽泛的 grep 扫描和整�
 - PHP
 
 ## 安装
+
+### Rust 库
+
+```toml
+[dependencies]
+code-search-cli = "0.1"
+```
+
+```rust
+use code_search_cli::{search_symbols, SymbolSearchRequest};
+
+let result = search_symbols(SymbolSearchRequest {
+    repo_path: ".".into(),
+    name: Some("Parser".into()),
+    kind: None,
+    language: None,
+    path_pattern: None,
+    limit: 20,
+    offset: 0,
+})?;
+
+for symbol in result.items {
+    println!("{} {} {}", symbol.kind, symbol.name, symbol.path);
+}
+```
 
 ### Homebrew
 
