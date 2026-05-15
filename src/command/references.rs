@@ -13,14 +13,12 @@ pub fn run(args: ReferencesArgs) -> Result<()> {
         limit: args.limit,
         offset: args.offset,
     })?;
-    for warning in &result.warnings {
-        eprintln!("warning: {warning}");
-    }
+    let warning = (!result.warnings.is_empty()).then(|| result.warnings.join("; "));
 
     print_references(
         &result.items,
         &args.format,
-        None,
+        warning.as_deref(),
         Some(result.total),
         args.offset,
         args.limit,
