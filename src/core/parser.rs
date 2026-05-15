@@ -37,19 +37,29 @@ impl CompiledSymbolsQuery {
 
 fn compiled_symbols_query(language: Language) -> &'static CompiledSymbolsQuery {
     static RUST_QUERY: OnceLock<CompiledSymbolsQuery> = OnceLock::new();
+    static JAVASCRIPT_QUERY: OnceLock<CompiledSymbolsQuery> = OnceLock::new();
     static TYPESCRIPT_QUERY: OnceLock<CompiledSymbolsQuery> = OnceLock::new();
+    static JAVA_QUERY: OnceLock<CompiledSymbolsQuery> = OnceLock::new();
     static PYTHON_QUERY: OnceLock<CompiledSymbolsQuery> = OnceLock::new();
     static GO_QUERY: OnceLock<CompiledSymbolsQuery> = OnceLock::new();
+    static RUBY_QUERY: OnceLock<CompiledSymbolsQuery> = OnceLock::new();
+    static PHP_QUERY: OnceLock<CompiledSymbolsQuery> = OnceLock::new();
 
     match language {
         Language::Rust => RUST_QUERY.get_or_init(|| CompiledSymbolsQuery::compile(Language::Rust)),
+        Language::JavaScript => {
+            JAVASCRIPT_QUERY.get_or_init(|| CompiledSymbolsQuery::compile(Language::JavaScript))
+        }
         Language::TypeScript => {
             TYPESCRIPT_QUERY.get_or_init(|| CompiledSymbolsQuery::compile(Language::TypeScript))
         }
+        Language::Java => JAVA_QUERY.get_or_init(|| CompiledSymbolsQuery::compile(Language::Java)),
         Language::Python => {
             PYTHON_QUERY.get_or_init(|| CompiledSymbolsQuery::compile(Language::Python))
         }
         Language::Go => GO_QUERY.get_or_init(|| CompiledSymbolsQuery::compile(Language::Go)),
+        Language::Ruby => RUBY_QUERY.get_or_init(|| CompiledSymbolsQuery::compile(Language::Ruby)),
+        Language::Php => PHP_QUERY.get_or_init(|| CompiledSymbolsQuery::compile(Language::Php)),
     }
 }
 
@@ -306,6 +316,75 @@ mod tests {
         assert_eq!(methods[0].container_name.as_deref(), Some("EventEmitter"));
     }
 
+    // --- JavaScript ---
+    #[test]
+    fn js_class_and_function() {
+        let syms = parse_fixture("sample.js", Language::JavaScript);
+        let s = find_symbol(&syms, "EventEmitter").unwrap();
+        assert_eq!(s.kind, SymbolKind::Class);
+        assert!(s.exported);
+        let s = find_symbol(&syms, "createLogger").unwrap();
+        assert_eq!(s.kind, SymbolKind::Function);
+        assert!(s.exported);
+    }
+
+    #[test]
+    fn js_const_and_variable() {
+        let syms = parse_fixture("sample.js", Language::JavaScript);
+        let s = find_symbol(&syms, "VERSION").unwrap();
+        assert_eq!(s.kind, SymbolKind::Const);
+        assert!(s.exported);
+        let s = find_symbol(&syms, "currentLevel").unwrap();
+        assert_eq!(s.kind, SymbolKind::Variable);
+        assert!(!s.exported);
+    }
+
+    #[test]
+    fn js_methods_have_container() {
+        let syms = parse_fixture("sample.js", Language::JavaScript);
+        let method = syms
+            .iter()
+            .find(|s| s.kind == SymbolKind::Method && s.name == "on")
+            .unwrap();
+        assert_eq!(method.container_name.as_deref(), Some("EventEmitter"));
+    }
+
+    // --- Java ---
+    #[test]
+    fn java_types() {
+        let syms = parse_fixture("sample.java", Language::Java);
+        let s = find_symbol(&syms, "Parser").unwrap();
+        assert_eq!(s.kind, SymbolKind::Class);
+        assert!(s.exported);
+        let s = find_symbol(&syms, "Parseable").unwrap();
+        assert_eq!(s.kind, SymbolKind::Interface);
+        let s = find_symbol(&syms, "Level").unwrap();
+        assert_eq!(s.kind, SymbolKind::Enum);
+        let s = find_symbol(&syms, "Token").unwrap();
+        assert_eq!(s.kind, SymbolKind::Class);
+    }
+
+    #[test]
+    fn java_fields() {
+        let syms = parse_fixture("sample.java", Language::Java);
+        let s = find_symbol(&syms, "MAX_SIZE").unwrap();
+        assert_eq!(s.kind, SymbolKind::Const);
+        assert!(s.exported);
+        let s = find_symbol(&syms, "bufferSize").unwrap();
+        assert_eq!(s.kind, SymbolKind::Variable);
+        assert!(!s.exported);
+    }
+
+    #[test]
+    fn java_methods_have_container() {
+        let syms = parse_fixture("sample.java", Language::Java);
+        let method = syms
+            .iter()
+            .find(|s| s.kind == SymbolKind::Method && s.name == "create")
+            .unwrap();
+        assert_eq!(method.container_name.as_deref(), Some("Parser"));
+    }
+
     // --- Python ---
     #[test]
     fn py_class() {
@@ -396,5 +475,73 @@ mod tests {
         assert_eq!(s.kind, SymbolKind::Const);
         let s = find_symbol(&syms, "DefaultTimeout").unwrap();
         assert_eq!(s.kind, SymbolKind::Variable);
+    }
+
+    // --- Ruby ---
+    #[test]
+    fn ruby_module_and_class() {
+        let syms = parse_fixture("sample.rb", Language::Ruby);
+        let s = find_symbol(&syms, "Logging").unwrap();
+        assert_eq!(s.kind, SymbolKind::Module);
+        let s = find_symbol(&syms, "Logger").unwrap();
+        assert_eq!(s.kind, SymbolKind::Class);
+    }
+
+    #[test]
+    fn ruby_const_and_variable() {
+        let syms = parse_fixture("sample.rb", Language::Ruby);
+        let s = find_symbol(&syms, "VERSION").unwrap();
+        assert_eq!(s.kind, SymbolKind::Const);
+        let s = find_symbol(&syms, "current_level").unwrap();
+        assert_eq!(s.kind, SymbolKind::Variable);
+    }
+
+    #[test]
+    fn ruby_methods_have_container() {
+        let syms = parse_fixture("sample.rb", Language::Ruby);
+        let method = syms
+            .iter()
+            .find(|s| s.kind == SymbolKind::Method && s.name == "log")
+            .unwrap();
+        assert_eq!(method.container_name.as_deref(), Some("Logger"));
+    }
+
+    // --- PHP ---
+    #[test]
+    fn php_namespace_and_types() {
+        let syms = parse_fixture("sample.php", Language::Php);
+        let s = find_symbol(&syms, "Demo\\Core").unwrap();
+        assert_eq!(s.kind, SymbolKind::Module);
+        let s = find_symbol(&syms, "LoggerInterface").unwrap();
+        assert_eq!(s.kind, SymbolKind::Interface);
+        let s = find_symbol(&syms, "WithContext").unwrap();
+        assert_eq!(s.kind, SymbolKind::Interface);
+        let s = find_symbol(&syms, "Logger").unwrap();
+        assert_eq!(s.kind, SymbolKind::Class);
+    }
+
+    #[test]
+    fn php_members() {
+        let syms = parse_fixture("sample.php", Language::Php);
+        let s = find_symbol(&syms, "create_logger").unwrap();
+        assert_eq!(s.kind, SymbolKind::Function);
+        let s = find_symbol(&syms, "VERSION").unwrap();
+        assert_eq!(s.kind, SymbolKind::Const);
+        let s = find_symbol(&syms, "shared").unwrap();
+        assert_eq!(s.kind, SymbolKind::Variable);
+    }
+
+    #[test]
+    fn php_methods_have_container() {
+        let syms = parse_fixture("sample.php", Language::Php);
+        let method = syms
+            .iter()
+            .find(|s| {
+                s.kind == SymbolKind::Method
+                    && s.name == "log"
+                    && s.container_name.as_deref() == Some("Logger")
+            })
+            .unwrap();
+        assert_eq!(method.container_name.as_deref(), Some("Logger"));
     }
 }

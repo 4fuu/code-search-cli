@@ -30,6 +30,17 @@ AI Agent 探索代码库时，大量 token 浪费在宽泛的 grep 扫描和整�
 - `codes skill install` — 为 Claude Code 或 Codex 安装 agent skill 文件
 - 支持 `text` / `json` 两种输出
 
+## 已支持语言
+
+- Rust
+- JavaScript / JSX
+- TypeScript / TSX
+- Java
+- Python
+- Go
+- Ruby
+- PHP
+
 ## 安装
 
 ### Homebrew
@@ -110,7 +121,7 @@ codes skill install --target <codex|claude-code> [--force]
 |------|----------|------|
 | `--name` | symbols, definition, references | symbols：大小写不敏感子串；definition/references：精确匹配 |
 | `--kind` | 所有搜索命令 | 按符号类型过滤（支持 tab 补全） |
-| `--lang` | 所有搜索命令 | 按语言过滤（别名：`rs`、`ts`、`py`） |
+| `--lang` | 所有搜索命令 | 按语言过滤（别名：`rs`、`js`、`jsx`、`ts`、`py`、`golang`、`rb`） |
 | `--path` | 所有搜索命令 | 按文件路径过滤——子串或含 `*` 的 glob |
 | `--limit` | symbols, definition, references | 限制结果数量（默认 100） |
 | `--offset` | symbols, definition, references | 跳过前 N 条结果 |

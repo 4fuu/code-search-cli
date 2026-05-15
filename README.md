@@ -30,6 +30,17 @@ AI agents exploring a codebase waste tokens on broad grep scans and full file re
 - `codes skill install` — install an agent skill file for Claude Code or Codex
 - Text and JSON output modes
 
+## Supported Languages
+
+- Rust
+- JavaScript / JSX
+- TypeScript / TSX
+- Java
+- Python
+- Go
+- Ruby
+- PHP
+
 ## Installation
 
 ### Homebrew
@@ -110,7 +121,7 @@ codes skill install --target <codex|claude-code> [--force]
 |------|----------|-------------|
 | `--name` | symbols, definition, references | symbols: case-insensitive substring; definition/references: exact match |
 | `--kind` | all search | Filter by symbol kind (tab-completable) |
-| `--lang` | all search | Filter by language (aliases: `rs`, `ts`, `py`) |
+| `--lang` | all search | Filter by language (aliases: `rs`, `js`, `jsx`, `ts`, `py`, `golang`, `rb`) |
 | `--path` | all search | Filter by file path — substring or glob with `*` |
 | `--limit` | symbols, definition, references | Cap number of results (default: 100) |
 | `--offset` | symbols, definition, references | Skip the first N results |
