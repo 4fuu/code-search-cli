@@ -1,12 +1,12 @@
 {
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Tree-sitter based local code search CLI",
   "homepage": "https://github.com/4fuu/code-search-cli",
   "license": "MIT",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/4fuu/code-search-cli/releases/download/v0.1.3/codes-v0.1.3-x86_64-pc-windows-msvc.zip",
-      "hash": "e86394fdcf43fda729984f5dac587bf9f0dd7bbc37061281b9912f0391a093cf"
+      "url": "https://github.com/4fuu/code-search-cli/releases/download/v0.1.4/codes-v0.1.4-x86_64-pc-windows-msvc.zip",
+      "hash": "12747628139314efa11fb8b5f52a01fc355e6abf5d46cf474972c92679fc79be"
     }
   },
   "bin": "codes.exe",
@@ -16,7 +16,7 @@
   "autoupdate": {
     "architecture": {
       "64bit": {
-        "url": "https://github.com/4fuu/code-search-cli/releases/download/v0.1.3/codes-v$version-x86_64-pc-windows-msvc.zip"
+        "url": "https://github.com/4fuu/code-search-cli/releases/download/v0.1.4/codes-v$version-x86_64-pc-windows-msvc.zip"
       }
     }
   }
