@@ -138,6 +138,40 @@ mod tests {
     }
 
     #[test]
+    fn js_references() {
+        let source = std::fs::read_to_string(
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/sample.js"),
+        )
+        .unwrap();
+        let refs = find_references(
+            &source,
+            Language::JavaScript,
+            "EventEmitter",
+            "tests/fixtures/sample.js",
+            Some(SymbolKind::Class),
+        )
+        .unwrap();
+        assert!(!refs.is_empty(), "expected references to EventEmitter");
+    }
+
+    #[test]
+    fn java_references() {
+        let source = std::fs::read_to_string(
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/sample.java"),
+        )
+        .unwrap();
+        let refs = find_references(
+            &source,
+            Language::Java,
+            "Parser",
+            "tests/fixtures/sample.java",
+            Some(SymbolKind::Class),
+        )
+        .unwrap();
+        assert!(!refs.is_empty(), "expected references to Parser");
+    }
+
+    #[test]
     fn py_references() {
         let source = std::fs::read_to_string(
             Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/sample.py"),
@@ -152,6 +186,40 @@ mod tests {
         )
         .unwrap();
         assert!(!refs.is_empty(), "expected references to Config");
+    }
+
+    #[test]
+    fn ruby_references() {
+        let source = std::fs::read_to_string(
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/sample.rb"),
+        )
+        .unwrap();
+        let refs = find_references(
+            &source,
+            Language::Ruby,
+            "Logger",
+            "tests/fixtures/sample.rb",
+            Some(SymbolKind::Class),
+        )
+        .unwrap();
+        assert!(!refs.is_empty(), "expected references to Logger");
+    }
+
+    #[test]
+    fn php_references() {
+        let source = std::fs::read_to_string(
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/sample.php"),
+        )
+        .unwrap();
+        let refs = find_references(
+            &source,
+            Language::Php,
+            "Logger",
+            "tests/fixtures/sample.php",
+            Some(SymbolKind::Class),
+        )
+        .unwrap();
+        assert!(!refs.is_empty(), "expected references to Logger");
     }
 
     #[test]

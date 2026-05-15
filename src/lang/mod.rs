@@ -1,6 +1,10 @@
 pub mod go;
+pub mod java;
+pub mod javascript;
+pub mod php;
 pub mod python;
 pub mod rust;
+pub mod ruby;
 pub mod typescript;
 
 use crate::core::language::Language;
@@ -10,9 +14,13 @@ use tree_sitter::Node;
 pub fn get_language_support(lang: Language) -> Box<dyn LanguageSupport> {
     match lang {
         Language::Rust => Box::new(rust::RustSupport),
+        Language::JavaScript => Box::new(javascript::JavaScriptSupport),
         Language::TypeScript => Box::new(typescript::TypeScriptSupport),
+        Language::Java => Box::new(java::JavaSupport),
         Language::Python => Box::new(python::PythonSupport),
         Language::Go => Box::new(go::GoSupport),
+        Language::Ruby => Box::new(ruby::RubySupport),
+        Language::Php => Box::new(php::PhpSupport),
     }
 }
 
@@ -122,8 +130,12 @@ mod tests {
     #[test]
     fn get_language_support_returns_correct_types() {
         let _ = get_language_support(Language::Rust);
+        let _ = get_language_support(Language::JavaScript);
         let _ = get_language_support(Language::TypeScript);
+        let _ = get_language_support(Language::Java);
         let _ = get_language_support(Language::Python);
         let _ = get_language_support(Language::Go);
+        let _ = get_language_support(Language::Ruby);
+        let _ = get_language_support(Language::Php);
     }
 }
