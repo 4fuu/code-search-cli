@@ -116,12 +116,18 @@ mod tests {
 
     #[test]
     fn from_path_ruby() {
-        assert_eq!(Language::from_path(Path::new("foo.rb")), Some(Language::Ruby));
+        assert_eq!(
+            Language::from_path(Path::new("foo.rb")),
+            Some(Language::Ruby)
+        );
     }
 
     #[test]
     fn from_path_php() {
-        assert_eq!(Language::from_path(Path::new("foo.php")), Some(Language::Php));
+        assert_eq!(
+            Language::from_path(Path::new("foo.php")),
+            Some(Language::Php)
+        );
     }
 
     #[test]

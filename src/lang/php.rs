@@ -67,7 +67,11 @@ impl LanguageSupport for PhpSupport {
         find_container_name(
             node,
             source,
-            &["class_declaration", "interface_declaration", "trait_declaration"],
+            &[
+                "class_declaration",
+                "interface_declaration",
+                "trait_declaration",
+            ],
             "name",
         )
     }
