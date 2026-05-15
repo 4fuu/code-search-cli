@@ -195,9 +195,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          assets=(release/*.tar.gz release/*.zip release/SHA256SUMS.txt)
           gh release create "$TAG" \
             --repo "$REPO_SLUG" \
             --title "$TITLE" \
             --notes-file release/RELEASE_NOTES.md \
             --target "$GITHUB_SHA" \
-            release/*
+            "${assets[@]}"
