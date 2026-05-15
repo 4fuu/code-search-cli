@@ -6,7 +6,7 @@
   "architecture": {
     "64bit": {
       "url": "https://github.com/4fuu/code-search-cli/releases/download/v0.1.4/codes-v0.1.4-x86_64-pc-windows-msvc.zip",
-      "hash": "12747628139314efa11fb8b5f52a01fc355e6abf5d46cf474972c92679fc79be"
+      "hash": "e1441a80ae20122fbb86b1b6c023622b782a874f7360df0c71d2fa9c88a42012"
     }
   },
   "bin": "codes.exe",
